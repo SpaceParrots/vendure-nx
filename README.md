@@ -33,18 +33,20 @@ This repo was generated as a standard [Nx Integrated Repo](https://nx.dev/gettin
 This repo is set up to use Postgres as the DB, Redis to power the job queue, and optionally MinIO to serve assets. If MinIO is not used, assets will be stored on the local file system.
 
 1. Clone this repo
-2. Copy `.env.example` to `.env`, and set the connection details for Postgres, Redis and (optionally) MinIO.
-3. `yarn install`
-4. `yarn dev:server`
+2. `npm install`
+3. Copy `.env.example` to `.env`, and set the connection details for Postgres, Redis and (optionally) MinIO.
+4. Run `docker-compose up -d` to start all required services
+5. Populate the database with test data
+6. `npm dev:server`
 
-Why yarn? I ran into an issue when using the latest version of npm, where the dependencies were not flattened in a way that broke the admin ui compilation. I _think_ this can be mitigated with the `--legacy-peer-deps` flag, if you prefer to use npm.
+Why npm? I ran into an issue when using the latest version of npm, where the dependencies were not flattened in a way that broke the admin ui compilation. I _think_ this can be mitigated with the `--legacy-peer-deps` flag, if you prefer to use npm.
 
 ## Migrations
 
 When you make [changes that require a DB migration](https://www.vendure.io/docs/developer-guide/migrations/), you should run:
 
 ```
-yarn nx run server:migration <migration name>
+npm nx run server:migration <migration name>
 ```
 
 This will generate a new migration file in the [./apps/server/migrations](./apps/server/migrations) directory. Next time you run the server, this migration will be executed and will update your DB schema. Make sure to check the contents of the migration file before running the server, just to ensure that all looks correct.
