@@ -1,0 +1,15 @@
+.git
+.angular
+.idea
+.nx
+.vscode
+.github
+desktop-client
+dist
+static/email/output
+static/assets
+node_modules
+tmp
+tools/scripts/data-import
+tools/vendure-nx
+dist/apps/admin-ui-app/.angular
