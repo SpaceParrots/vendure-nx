@@ -33,5 +33,5 @@ COPY static ./static
 # Extend path to get access to node_modules/.bin scripts
 ENV PATH=/app/apps/worker/node_modules/.bin:$PATH
 
-EXPOSE 3000
+EXPOSE 3123
 CMD ["node", "dist/apps/worker/main.js"]

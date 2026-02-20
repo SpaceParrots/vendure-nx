@@ -8,7 +8,8 @@ import {
 } from '@vendure/core';
 import * as path from 'path';
 
-const ADMIN_UI_DEV_MODE = !!process.env.ADMIN_UI_DEV_MODE;
+const ADMIN_UI_DEV_MODE = process.env.DEV_ADMIN_UI === 'true';
+const PORT = +process.env.API_INTERNAL_PORT || 3000;
 
 const mergedConfig = mergeConfig(config, {
   dbConnectionOptions: {
@@ -32,7 +33,7 @@ const mergedConfig = mergeConfig(config, {
             command: 'npm',
           })
         : {
-            path: path.join(process.cwd(), 'dist/apps/admin-ui-app/dist'),
+            path: path.join(__dirname, '../admin-ui/dist/browser'),
           },
     }),
   ],
