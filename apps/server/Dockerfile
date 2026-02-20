@@ -1,20 +1,48 @@
-# build stage
-FROM node:lts-alpine as build-stage
+# Build stage
+FROM node:22 AS build-stage
 WORKDIR /app
-COPY package*.json yarn.lock ./
-RUN yarn install
-COPY . .
-RUN yarn nx build admin-ui --skip-nx-cache && yarn nx build server --skip-nx-cache
 
-# production stage
-FROM node:16 as production-stage
+# Copy only necessary files for dependency installation
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the source code and build
+COPY . .
+RUN npx nx build admin-ui --skip-nx-cache --verbose && npx nx build server --skip-nx-cache --verbose
+# Clean up unnecessary files
+RUN rm -rf dist/apps/admin-ui/.angular
+
+# Production stage
+FROM node:22-slim AS production-stage
+
+# Set environment variables
+ENV NODE_ENV=production
+
 WORKDIR /app
+
+# Copy only necessary files from the build stage
 COPY --from=build-stage /app/dist/apps/server ./dist/apps/server
-COPY --from=build-stage /app/dist/apps/admin-ui-app ./dist/apps/admin-ui-app
+COPY --from=build-stage /app/dist/apps/admin-ui ./dist/apps/admin-ui
 COPY --from=build-stage /app/dist/migrations ./dist/migrations
+
+# Install wget for health checks
+RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf /var/lib/apt/lists/*
+
 # Install runtime dependencies - npm used here due to package nesting issues
 # when using yarn
-RUN cd dist/apps/server && npm i --legacy-peer-deps
+RUN cd dist/apps/server && npm install --omit=dev && npm cache clean --force
+
+WORKDIR dist/apps/server
+
 COPY static ./static
+
+# Extend path to get access to node_modules/.bin scripts
+ENV PATH=/app/apps/server/node_modules/.bin:$PATH
+
+# Expose the application port
 EXPOSE 3000
-CMD ["node", "dist/apps/server/main.js"]
+# Start the application with Sentry instrumentation
+# CMD node --import @vendure/sentry-plugin/instrument ./main.js
+CMD node ./main.js
