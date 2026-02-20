@@ -39,7 +39,6 @@ services:
   redis:
     image: bitnami/redis:6.2
     hostname: redis
-    container_name: redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
     ports:

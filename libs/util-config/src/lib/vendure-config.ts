@@ -14,6 +14,8 @@ import {
 } from '@vendure/asset-server-plugin';
 import { BullMQJobQueuePlugin } from '@vendure/job-queue-plugin/package/bullmq';
 import { ExamplePlugin } from '@vendure-nx/plugin-example';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 const PORT = +((process.env.API_INTERNAL_PORT ?? 3000).toString());
 const assetUrlPrefix =
@@ -46,8 +48,8 @@ export const config: VendureConfig = {
       process.env.LOG_LEVEL === 'debug'
         ? LogLevel.Debug
         : process.env.LOG_LEVEL === 'verbose'
-        ? LogLevel.Verbose
-        : LogLevel.Info,
+          ? LogLevel.Verbose
+          : LogLevel.Info,
   }),
   systemOptions: {
     healthChecks: [
@@ -79,7 +81,7 @@ export const config: VendureConfig = {
     BullMQJobQueuePlugin.init({
       connection: {
         host: process.env.REDIS_HOST ?? '127.0.0.1',
-        port: +process.env.REDIS_PORT ?? 6379,
+        port: process.env.REDIS_PORT ? +process.env.REDIS_PORT : 6379,
         password: process.env.REDIS_PASSWORD ?? null,
       },
       queueOptions: {
