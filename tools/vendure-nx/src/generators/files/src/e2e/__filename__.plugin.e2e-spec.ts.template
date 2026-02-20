@@ -4,21 +4,22 @@ import {
     createTestEnvironment,
 } from '@vendure/testing';
 import path from 'path';
-import { describe, expect } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
+import { mergeConfig } from '@vendure/core';
 
 import { <%= titlecase(name) %>Plugin } from '../lib/<%= filename %>.plugin';
 
 describe('<%= name %> plugin', () => {
     initializeE2e(path.join(__dirname, '__data__'));
 
-    const { server, adminClient, shopClient } = createTestEnvironment({
-        ...testConfig,
-        plugins: [<%= titlecase(name) %>Plugin],
-        authOptions: {
-            ...testConfig.authOptions,
+    const { server, adminClient, shopClient } = createTestEnvironment(
+        mergeConfig(testConfig(), {
+          plugins: [<%= titlecase(name) %>Plugin],
+          authOptions: {
             requireVerification: false,
-        },
-    });
+          },
+        }),
+      );
 
     beforeAll(async () => {
         await server.init({

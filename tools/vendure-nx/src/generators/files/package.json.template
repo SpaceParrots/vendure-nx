@@ -1,0 +1,6 @@
+{
+  "name": "plugin-<%= filename %>",
+  "version": "0.0.0",
+  "description": "A vendure plugin",
+  "private": true
+}
