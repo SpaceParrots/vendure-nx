@@ -1,7 +1,24 @@
 {
   "root": true,
-  "ignorePatterns": ["**/*"],
-  "plugins": ["@nx"],
+  "env": {
+    "node": true
+  },
+  "ignorePatterns": [
+    "node_modules",
+    "migrations/*.ts",
+    "**/generated*",
+    "**/*.js",
+    "**/*.d.ts",
+    "**/e2e/types/**",
+    "*.e2e-spec.ts",
+    "**/gql/*.ts"
+  ],
+  "plugins": ["@nx", "prettier"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
